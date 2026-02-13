@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Polygon
 import joblib
 from scipy.optimize import differential_evolution
+import os
 
 # ---------- 1. PAGE CONFIG & LIGHT THEME CSS ----------
 
@@ -173,11 +174,15 @@ st.markdown("""
 @st.cache_resource
 def load_brain():
     try:
-        model = joblib.load('archery_model.pkl')
-        scaler = joblib.load('archery_scaler.pkl')
+        base_dir = os.path.dirname(__file__)
+        model_path = os.path.join(base_dir, "archery_model.pkl")
+        scaler_path = os.path.join(base_dir, "archery_scaler.pkl")
+
+        model = joblib.load(model_path)
+        scaler = joblib.load(scaler_path)
         return model, scaler
-    except:
-        st.error("Model files not found. Place 'archery_model.pkl' and 'archery_scaler.pkl' next to this script.")
+    except Exception as e:
+        st.error(f"Model files not found. Error: {e}")
         return None, None
 
 model, scaler = load_brain()
